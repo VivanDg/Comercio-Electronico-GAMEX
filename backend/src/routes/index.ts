@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import authRoutes from '../modules/auth/auth.routes';
 import usersRoutes from '../modules/users/users.routes';
 import productsRoutes from '../modules/products/products.routes';
@@ -11,7 +11,7 @@ import adminRoutes from '../modules/admin/admin.routes';
 
 const router = Router();
 
-router.get('/health', (_req, res) => {
+router.get('/health', (_req: Request, res: Response) => {
   res.json({
     success: true,
     message: 'Gamex Import API is running',

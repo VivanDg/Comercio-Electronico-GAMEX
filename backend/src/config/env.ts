@@ -30,5 +30,5 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const env = parsed.data;
+export const env = parsed.data!;
 export const isProduction = env.NODE_ENV === 'production';
