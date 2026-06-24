@@ -1,3 +1,9 @@
+databases:
+  - name: gamex-db
+    plan: free
+    region: oregon
+    postgresMajorVersion: 16
+
 services:
   - type: web
     name: gamex-backend
@@ -17,7 +23,9 @@ services:
       - key: API_PREFIX
         value: /api/v1
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: gamex-db
+          property: connectionString
       - key: JWT_SECRET
         value: gamex-production-jwt-secret-2026-min-32-chars
       - key: JWT_EXPIRES_IN
