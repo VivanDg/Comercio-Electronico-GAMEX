@@ -7,7 +7,7 @@ services:
     region: oregon
     rootDir: backend
     buildCommand: npm install --include=dev && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && npm start
+    startCommand: npx prisma migrate deploy && node prisma/seed.js && npm start
     healthCheckPath: /api/v1/health
     envVars:
       - key: NODE_ENV
