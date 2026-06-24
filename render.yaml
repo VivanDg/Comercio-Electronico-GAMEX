@@ -16,23 +16,21 @@ services:
       - key: API_PREFIX
         value: /api/v1
       - key: DATABASE_URL
-        fromDatabase:
-          name: gamex-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
-        generateValue: true
+        value: gamex-production-jwt-secret-2026-min-32-chars
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: JWT_COOKIE_NAME
         value: gamex_token
       - key: FRONTEND_URL
-        value: https://gamex-frontend.onrender.com
-      - key: CORS_ORIGIN
-        value: https://gamex-frontend.onrender.com
-      - key: MERCADOPAGO_ACCESS_TOKEN
         sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: MERCADOPAGO_ACCESS_TOKEN
+        value: APP_USR-3637788754419884-062413-39294f1beecb1dc47079b0b3a5b59077-3494430641
       - key: MERCADOPAGO_NOTIFICATION_URL
-        value: https://gamex-backend.onrender.com/api/v1/payments/webhook
+        sync: false
       - key: RESEND_API_KEY
         sync: false
       - key: RESEND_FROM_EMAIL
@@ -41,24 +39,3 @@ services:
         value: admin@gameximport.com
       - key: ADMIN_PASSWORD
         value: Admin123!
-
-  - type: web
-    name: gamex-frontend
-    runtime: node
-    repo: https://github.com/VivanDg/Comercio-Electronico-GAMEX
-    plan: free
-    region: oregon
-    buildCommand: npm install && npm run build
-    startCommand: npx next start -p $PORT
-    healthCheckPath: /
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_API_URL
-        value: https://gamex-backend.onrender.com/api/v1
-
-databases:
-  - name: gamex-db
-    plan: free
-    region: oregon
-    postgresMajorVersion: 16
