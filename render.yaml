@@ -2,7 +2,7 @@ services:
   - type: web
     name: gamex-backend
     runtime: node
-    repo: https://github.com/tu-usuario/tu-repo
+    repo: https://github.com/VivanDg/Comercio-Electronico-GAMEX
     plan: free
     region: oregon
     buildCommand: npm install && npm run build
@@ -45,7 +45,7 @@ services:
   - type: web
     name: gamex-frontend
     runtime: node
-    repo: https://github.com/tu-usuario/tu-repo
+    repo: https://github.com/VivanDg/Comercio-Electronico-GAMEX
     plan: free
     region: oregon
     buildCommand: npm install && npm run build
