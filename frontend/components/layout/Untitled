@@ -1,0 +1,443 @@
+📌 CONTEXTO GENERAL DEL PROYECTO
+Debes desarrollar una plataforma e-commerce completa para una empresa llamada:
+Gamex Import (E.I.R.L.)
+Empresa dedicada a la venta de productos tecnológicos.
+El sistema debe digitalizar sus procesos de venta, gestión de inventario y pedidos, reemplazando procesos manuales y canales informales.
+🎯 OBJETIVO DEL SISTEMA
+Construir una plataforma e-commerce moderna que permita:
+•	Venta de productos tecnológicos online 
+•	Gestión de inventario en tiempo real 
+•	Gestión de usuarios (clientes y administradores) 
+•	Procesamiento de pagos con Mercado Pago 
+•	Panel administrativo completo 
+•	Historial de compras y seguimiento de pedidos 
+El sistema debe ser escalable, modular y listo para producción.
+🧠 ARQUITECTURA GENERAL
+Implementar una arquitectura:
+Monolito modular (backend) + frontend desacoplado
+Flujo:
+Frontend (Next.js)
+→ API REST (Node.js backend modular)
+→ PostgreSQL (Prisma ORM)
+→ Servicios externos:
+•	Mercado Pago (pagos) 
+•	Resend (emails) 
+•	Webhooks 
+🧩 DOMINIOS DEL SISTEMA (MODULOS BACKEND)
+Organizar el backend por módulos independientes:
+1.	Users Module 
+2.	Auth Module (JWT) 
+3.	Products Module 
+4.	Categories Module 
+5.	Inventory Module 
+6.	Cart Module 
+7.	Orders Module 
+8.	Payments Module 
+9.	Notifications Module 
+10.	Admin Module 
+Cada módulo debe contener:
+•	controller 
+•	service 
+•	repository (o prisma service) 
+•	dto 
+•	routes 
+•	validations 
+🗄️ MODELO DE DATOS (PRISMA + POSTGRESQL)
+Debes implementar estas entidades:
+Usuario
+•	id 
+•	nombre 
+•	email (único) 
+•	password (bcrypt) 
+•	rol (CLIENT / ADMIN) 
+Categoría
+•	id 
+•	nombre 
+•	descripción 
+Producto
+•	id 
+•	nombre 
+•	descripción 
+•	precio (> 0 obligatorio) 
+•	imagen 
+•	categoryId 
+Inventario
+•	id 
+•	productId (único) 
+•	stock 
+Pedido
+•	id 
+•	userId 
+•	fecha 
+•	total 
+•	estado: 
+o	PENDIENTE 
+o	PAGADO 
+o	ENVIADO 
+o	ENTREGADO 
+o	CANCELADO 
+DetallePedido
+•	id 
+•	orderId 
+•	productId 
+•	cantidad 
+•	subtotal 
+Pago
+•	id 
+•	orderId 
+•	monto 
+•	estado 
+•	método (MercadoPago) 
+________________________________________
+⚙️ REQUERIMIENTOS FUNCIONALES
+Implementar obligatoriamente:
+RF01 Auth
+•	Registro 
+•	Login 
+•	JWT 
+•	Roles 
+RF02 Productos (ADMIN)
+•	CRUD productos 
+RF03 Categorías (ADMIN)
+•	CRUD categorías 
+RF04 Catálogo (CLIENT)
+•	listado productos 
+•	detalle producto 
+RF05 Búsqueda
+•	filtros por nombre, categoría, precio 
+RF06 Carrito
+•	agregar productos 
+•	actualizar cantidades 
+•	eliminar items 
+RF07 Pedidos
+•	creación automática desde carrito 
+•	historial de pedidos 
+RF08 Pagos
+•	integración Mercado Pago 
+•	validación webhook 
+RF09 Inventario
+•	descuento automático al pagar 
+•	bloqueo si stock = 0 
+RF10 Notificaciones
+•	emails con Resend: 
+o	registro 
+o	compra 
+o	cambio de estado 
+RF11 Admin Panel
+•	dashboard básico (API ready) 
+________________________________________
+📏 REGLAS DE NEGOCIO
+Implementar lógica estricta:
+•	RN01: email único 
+•	RN02: no venta sin stock 
+•	RN03: stock se descuenta tras pago confirmado 
+•	RN04: pedido válido solo si pago aprobado 
+•	RN05: pedido siempre asociado a usuario 
+•	RN06: estados de pedido controlados 
+•	RN07: solo ADMIN gestiona productos 
+•	RN08: precio > 0 obligatorio 
+•	RN09: protección de endpoints admin 
+•	RN10: logs de operaciones 
+🔐 SEGURIDAD OBLIGATORIA
+Implementar:
+•	JWT authentication 
+•	bcrypt password hashing 
+•	role-based access control (RBAC) 
+•	protección: 
+o	XSS 
+o	CSRF 
+o	SQL injection (via ORM Prisma) 
+•	validación con DTOs (zod o class-validator) 
+ INTEGRACIÓN DE PAGOS
+Integrar:
+Mercado Pago
+•	checkout preference 
+•	webhook de confirmación 
+•	actualización automática de pedido 
+Flujo:
+1.	usuario compra 
+2.	se crea orden PENDIENTE 
+3.	redirige a Mercado Pago 
+4.	webhook confirma pago 
+5.	orden pasa a PAGADO 
+6.	stock se descuenta 
+________________________________________
+📧 NOTIFICACIONES
+Usar Resend:
+Eventos:
+•	usuario registrado 
+•	compra realizada 
+•	pedido actualizado 
+________________________________________
+🖥️ FRONTEND (NEXT.JS)
+Debe incluir:
+•	landing page 
+•	catálogo productos 
+•	búsqueda + filtros 
+•	carrito 
+•	checkout 
+•	login/register 
+•	perfil usuario 
+•	historial pedidos 
+•	panel admin 
+Tecnologías:
+•	Next.js 
+•	TypeScript 
+•	TailwindCSS 
+•	SSR + CSR híbrido 
+________________________________________
+INFRAESTRUCTURA
+Debe incluir:
+•	Docker Compose: 
+o	frontend 
+o	backend 
+o	postgres 
+•	entorno Linux (Ubuntu Server ready) 
+•	variables .env separadas 
+________________________________________
+REQUISITOS NO FUNCIONALES
+•	escalabilidad futura a microservicios 
+•	código limpio (Clean Architecture style) 
+•	separación por dominios 
+•	fácil mantenimiento 
+•	API REST bien estructurada 
+•	logging básico 
+________________________________________
+ESTRUCTURA ESPERADA
+/backend
+/modules
+/common
+/config
+/middlewares
+/database
+/frontend
+/app
+/components
+/services
+/hooks
+/types
+Genera el proyecto completo siguiendo estas reglas:
+1.	Primero crea la arquitectura backend modular 
+2.	Luego el esquema Prisma completo 
+3.	Luego endpoints REST por módulo 
+4.	Luego integración Mercado Pago 
+5.	Luego sistema de auth JWT 
+6.	Luego frontend en Next.js 
+7.	Finalmente Docker setup 
+⚠️ IMPORTANTE:
+•	No simplificar lógica de negocio 
+•	No omitir validaciones 
+•	No omitir seguridad 
+•	Usar buenas prácticas profesionales reales 
+•	Código listo para producción o startup real 
+💡 SALIDA ESPERADA
+Quiero que Claude Code genere:
+•	backend completo funcional 
+•	frontend básico funcional 
+•	base de datos lista 
+•	docker listo 
+•	integración pagos real 
+•	estructura escalable
+
+1. Situación Problemática
+Gamex Import es una empresa dedicada a la comercialización de productos tecnológicos. Actualmente, sus procesos de venta se realizan principalmente mediante atención presencial y canales digitales informales, lo que limita su capacidad de crecimiento y dificulta la gestión eficiente de la información comercial.
+La empresa no cuenta con una plataforma e-commerce que permita centralizar la venta de productos, administrar el inventario en tiempo real y brindar una experiencia de compra accesible para los clientes. Esta situación genera dificultades en el control de productos, seguimiento de pedidos y disponibilidad de información actualizada sobre el stock.
+Asimismo, la limitada presencia digital reduce las oportunidades de captar nuevos clientes y competir en un mercado donde el comercio electrónico se ha convertido en un canal fundamental para la comercialización de productos tecnológicos.
+Ante esta problemática, surge la necesidad de implementar una plataforma e-commerce que permita digitalizar los procesos comerciales, mejorar la gestión operativa y fortalecer la presencia digital de Gamex Import.
+2. Propósito del Caso Práctico
+El propósito del caso práctico es diseñar y desarrollar una plataforma e-commerce para Gamex Import que permita digitalizar sus procesos comerciales, mejorar la gestión de productos e inventario y fortalecer su presencia digital, contribuyendo al crecimiento y competitividad de la empresa.
+3. Actores Sugeridos
+Para el desarrollo inicial de la plataforma e-commerce de Gamex Import se consideran los siguientes actores principales:
+Cliente
+Es el usuario que interactúa con la plataforma para consultar productos, realizar compras, gestionar su cuenta y realizar seguimiento de sus pedidos.
+Administrador
+Es el responsable de gestionar el funcionamiento del sistema, incluyendo la administración de productos, inventario, pedidos, usuarios y demás configuraciones necesarias para la operación de la plataforma.
+Cuadro resumen de actores
+Actor	Descripción
+Cliente	Consulta productos, realiza compras y gestiona sus pedidos.
+Administrador	Administra productos, inventario, pedidos y usuarios del sistema.
+5. Requerimientos Funcionales Mínimos
+Los requerimientos funcionales mínimos definen las funcionalidades esenciales que deberá cumplir la plataforma e-commerce de Gamex Import para satisfacer las necesidades de los usuarios y garantizar la correcta operación del sistema.
+RF01. Gestión de usuarios
+El sistema deberá permitir el registro, inicio de sesión y administración de cuentas de usuario.
+RF02. Gestión de productos
+El administrador deberá poder registrar, editar, eliminar y visualizar productos dentro del catálogo.
+RF03. Gestión de categorías
+El sistema deberá permitir organizar los productos mediante categorías.
+RF04. Consulta de productos
+Los clientes deberán poder visualizar el catálogo de productos y consultar información detallada de cada uno.
+RF05. Búsqueda de productos
+El sistema deberá permitir la búsqueda de productos mediante palabras clave y filtros básicos.
+RF06. Carrito de compras
+Los clientes deberán poder agregar, actualizar y eliminar productos de su carrito de compras.
+RF07. Gestión de pedidos
+El sistema deberá registrar y administrar los pedidos realizados por los clientes.
+RF08. Procesamiento de pagos
+El sistema deberá permitir procesar pagos electrónicos mediante la integración con Mercado Pago.
+RF09. Control de inventario
+El sistema deberá actualizar automáticamente el stock disponible después de cada compra realizada.
+RF10. Notificaciones
+El sistema deberá enviar notificaciones por correo electrónico relacionadas con registros, compras y estados de pedidos.
+RF11. Panel de administración
+El administrador deberá disponer de un panel para gestionar productos, inventario, pedidos y usuarios.
+RF12. Historial de compras
+Los clientes deberán poder consultar el historial de sus pedidos realizados dentro de la plataforma.
+6. Reglas de Negocio Mínimas
+Las reglas de negocio establecen las condiciones y restricciones que deben cumplirse para garantizar el correcto funcionamiento de la plataforma e-commerce.
+RN01. Registro único de usuarios
+Cada usuario deberá registrarse con un correo electrónico único dentro del sistema.
+RN02. Disponibilidad de stock
+Un producto solo podrá ser adquirido si cuenta con stock disponible.
+RN03. Actualización automática de inventario
+Al confirmarse una compra, el sistema deberá descontar automáticamente la cantidad correspondiente del inventario.
+RN04. Validación de pago
+Un pedido será considerado válido únicamente cuando el pago haya sido aprobado por la pasarela de pago.
+RN05. Generación de pedidos
+Todo pedido deberá estar asociado a un cliente registrado en la plataforma.
+RN06. Estado de los pedidos
+Cada pedido deberá mantener un estado que permita conocer su situación actual (Pendiente, Pagado, Enviado, Entregado o Cancelado).
+RN07. Gestión exclusiva del catálogo
+Solo los administradores podrán registrar, modificar o eliminar productos y categorías.
+RN08. Control de precios
+Todos los productos deberán tener un precio mayor a cero para poder ser publicados.
+RN09. Protección de acceso administrativo
+Las funcionalidades de administración solo podrán ser utilizadas por usuarios con permisos de administrador.
+RN10. Registro de operaciones
+El sistema deberá almacenar información de las compras y movimientos realizados para fines de control y seguimiento.
+
+7. Modelo de Datos Referencial
+El modelo de datos referencial define las principales entidades que formarán parte de la plataforma e-commerce y las relaciones existentes entre ellas para garantizar la correcta gestión de usuarios, productos, inventario, pedidos y pagos.
+Entidades Principales
+Entidad	Descripción
+Usuario	Almacena la información de clientes y administradores.
+Categoría	Permite clasificar los productos del catálogo.
+Producto	Contiene la información de los productos disponibles para la venta.
+Inventario	Gestiona la cantidad disponible de cada producto.
+Pedido	Registra las compras realizadas por los clientes.
+DetallePedido	Almacena los productos asociados a cada pedido.
+Pago	Registra la información de las transacciones realizadas.
+Relaciones Principales
+•	Un Usuario puede realizar varios Pedidos. 
+•	Una Categoría puede contener varios Productos. 
+•	Un Producto posee un registro de Inventario. 
+•	Un Pedido puede contener varios DetallePedido. 
+•	Un DetallePedido está asociado a un único Producto. 
+•	Un Pedido genera un Pago.
+
+erDiagram
+
+USUARIO ||--o{ PEDIDO : realiza
+CATEGORIA ||--o{ PRODUCTO : clasifica
+PRODUCTO ||--|| INVENTARIO : posee
+PEDIDO ||--o{ DETALLE_PEDIDO : contiene
+PRODUCTO ||--o{ DETALLE_PEDIDO : pertenece
+PEDIDO ||--|| PAGO : genera
+
+USUARIO {
+int id
+string nombre
+string email
+string password
+string rol
+}
+
+CATEGORIA {
+int id
+string nombre
+string descripcion
+}
+
+PRODUCTO {
+int id
+string nombre
+string descripcion
+decimal precio
+string imagen
+}
+
+INVENTARIO {
+int id
+int stock
+}
+
+PEDIDO {
+int id
+date fecha
+decimal total
+string estado
+}
+
+DETALLE_PEDIDO {
+int id
+int cantidad
+decimal subtotal
+}
+
+PAGO {
+int id
+decimal monto
+string estado
+string metodo
+}
+ 
+
+5. PROPUESTA TÉCNICA E INFRAESTRUCTURA
+5.1 Arquitectura del Sistema
+El sistema se basará en una arquitectura de monolito modular, permitiendo un desarrollo inicial simple, organizado y mantenible, con posibilidad de evolución futura hacia una arquitectura basada en servicios.
+Arquitectura General
+Frontend → Backend (Monolito Modular) → API REST → Base de Datos → Servicios Externos (Pagos / Notificaciones)
+Descripción del funcionamiento
+Los usuarios interactúan desde el frontend, donde pueden visualizar productos, gestionar su carrito y realizar compras.
+Las solicitudes son enviadas al backend mediante API REST, el cual centraliza la lógica del sistema como usuarios, productos, inventario y pedidos.
+Toda la información es almacenada en PostgreSQL, garantizando consistencia y seguridad de los datos.
+Finalmente, el sistema se integra con servicios externos como Mercado Pago para pagos y Resend para notificaciones automáticas.
+Características Técnicas
+•	Escalabilidad progresiva: permite crecer desde un sistema monolítico hacia servicios distribuidos. 
+•	Arquitectura modular: separación por dominios (usuarios, productos, pedidos, pagos). 
+•	Integración por API REST: comunicación con servicios internos y externos. 
+•	Mantenibilidad alta: estructura centralizada que facilita el desarrollo inicial. 
+•	Flexibilidad futura: posibilidad de migración a microservicios sin rediseño completo. 
+5.2 Tecnologías Propuestas
+Las tecnologías seleccionadas permiten desarrollar una plataforma moderna, escalable y segura, enfocada en rendimiento y experiencia de usuario.
+Frontend
+•	Next.js (React Framework) 
+•	TypeScript 
+•	Renderizado híbrido (SSR / CSR) 
+•	Optimización SEO y rendimiento 
+Backend
+•	Node.js 
+•	Arquitectura modular por dominios 
+•	API REST 
+•	Autenticación con JWT 
+•	Validación y lógica de negocio centralizada 
+Base de Datos
+•	PostgreSQL 
+•	Modelo relacional (usuarios, productos, pedidos, inventario) 
+•	Alta integridad de datos 
+•	Prisma ORM (consultas y migraciones eficientes) 
+Infraestructura
+•	Docker (contenedores para despliegue) 
+•	Servidor Linux (Ubuntu Server) 
+APIs e Integraciones
+Pasarela de pago: Mercado Pago
+Permite transacciones seguras, alta confianza en el usuario y mejora la conversión en el proceso de compra.
+Notificaciones: Resend
+Permite el envío de correos transaccionales como confirmaciones de compra y actualizaciones de pedidos.
+Integraciones adicionales:
+•	Webhooks 
+•	Google Analytics 4 
+•	Google Search Console 
+•	Google Merchant Center 
+Estas herramientas permiten automatización, análisis de usuarios y posicionamiento en buscadores.
+5.3 Dominio y Seguridad
+Dominio
+•	Uso de dominio principal (.com) 
+•	Protección de marca mediante variantes regionales (.com.pe) 
+•	Configuración de DNS seguro 
+Seguridad
+•	HTTPS con SSL/TLS 
+•	Autenticación JWT 
+•	Encriptación de contraseñas con bcrypt 
+•	Control de roles (cliente / administrador) 
+•	Protección contra ataques (XSS, CSRF, SQL Injection) 
+•	Registro de logs para auditoría del sistema
